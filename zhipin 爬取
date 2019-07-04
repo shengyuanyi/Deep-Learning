@@ -81,10 +81,62 @@ if __name__ == '__main__':
     file.to_csv('Zhipin1.csv', mode='a', index = True, encoding = 'utf_8_sig')
     
     
+# 导入数据
+
+import numpy as np
+import pandas as pd
+import re
+
+data_df = pd.read_csv('Zhipin1.csv', usecols = [1,2,3,4])
+
+data_df.head(10)
+ 
+ 
+# 数据重新编辑
+# 公司信息组合形式： 性质+人数+‘人以上’
+# 薪水组合形式：     X k- XX k
+# 其他组合形式：     城市 区县 地址 年限 学历
+
+others = list(data_df['其他'])
+# 从中提取学历信息，该特征可以作为空格后最后的字
+# 从中提取经验信息，该特征可以全部用数字提取
+
+leng = len(others)
+for i in range(leng):
+    others[i] = other[i].replace('经验不限','0-n ')
+    others[i] = other[i].replace('应届生','0-0 ')
+    others[i] = other[i].replace('年',' ')
+
+# 对经验、学历、城市进行归类
+city, exp, edu = [], [], []
+for s in others:
+    temp = s.split('')
+    city.append(temp[0])
+    
+    edu.append(temp[-1])
+    
+    exps = s[-6:-2]
+    exp.append(exps)
+    
+data_df['地区'] = city
+data_df['学历'] = city
+data_df['经验'] = city
+    
+# 对薪水进行重新编辑
+salary_low, salary_high, salary_all = [], [], []
+salary = list[data_df['薪水']]
+leng2 = len(salary)
+for w in leng2：
+    salary[w] = salary[w].replace('k-',' ')
+    salary[w] = salary[w].replace('k',' ')
+    
+    temp = salary[w].split('')
+    salary_low.append(temp[0])
+    salary_high.append(temp[1])
+    
+    data_df['最低工资'] = salary_low
+    data_df['最高工资'] = salary_high
     
     
-
-    
-
-
+data_df.to_excel('Zhipin_summary.xlsx', index = True, encoding = 'utf_8_sig')
  
